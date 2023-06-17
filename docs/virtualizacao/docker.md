@@ -210,15 +210,14 @@ Verificar se você pode acessar e baixar imagens do Docker Hub:
 docker run hello-world
 ```
 
-> **Note**
+> **Note**\
 > Saida:
 >
 > Unable to find image 'hello-world:latest' locally
 > latest: Pulling from library/hello-world
 > 9bb5a5d4561a: Pull complete
 > Digest: sha256:3e1764d0f546ceac4565547df2ac4907fe46f007ea229fd7ef2718514bcec35d
-> Status: Downloaded newer image for hello-world:latest
->
+> Status: Downloaded newer image for hello-world:latest\
 > Hello from Docker!
 > This message shows that your installation appears to be working correctly.
 
@@ -256,7 +255,7 @@ Listar imagens pendentes.
 docker images -f dangling=true
 ```
 
-> **Note**
+> **Note**\
 > As imagens Docker consistem de várias camadas. As imagens pendentes são camadas que não têm relação com nenhuma imagem marcada. Elas não servem a um propósito e consomem espaço em disco.
 
 #### Remover imagem
@@ -299,9 +298,8 @@ docker run -it <imagem>
 # -t: link com o terminal do container
 ```
 
-> **Note**
-> Saida:
->
+> **Note**\
+> Saida: \
 > root@d9b100f2f636:/#
 
 Onde `d9b100f2f636` é o id do container.

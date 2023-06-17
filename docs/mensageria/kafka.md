@@ -66,21 +66,15 @@ A arquitetura do Apache Kafka é composta por **producers**, **consumers** e o p
 
 O _producer_ é qualquer aplicação que publica mensagens no _cluster_. O _consumer_ é qualquer aplicação que recebe as mensagens do Kafka. O cluster Kafka é um conjunto de nós (_brokers_) que funcionam como uma instância única do serviço de mensagem.
 
-O Kafka funciona como um _cluster_ de _brokers_ e isso permite configurações interessantes de disponibilidade.
+O Kafka funciona como um _cluster_ de _brokers_ e isso permite configurações interessantes de disponibilidade. Abaixo a figura da visão geral de um cluster:
 
-<figure>
-    <img src="../_kafka/kafka-cluster.png" title="Fonte: https://medium.com/@jhansireddy007/basic-concepts-of-kafka-e49e7674585e"/>
-    <figcaption>Visão geral de um cluster</figcaption>
-</figure>
+![Visão geral de um cluster - Fonte https://medium.com/@jhansireddy007/basic-concepts-of-kafka-e49e7674585e](../assets/kafka-cluster.png)
 
 Um _cluster_ Kafka é composto por vários _brokers_. Um _broker_ é um servidor Kafka que recebe mensagens dos producers e as grava no disco. Cada _broker_ gerencia uma lista de tópicos e cada tópico é dividido em diversas partições.
 
-Depois de receber as mensagens, o _broker_ as envia para os consumidores que estão registrados para cada tópico. Veja a imagem:
+Depois de receber as mensagens, o _broker_ as envia para os consumidores que estão registrados para cada tópico. Veja na imagem:
 
-<figure>
-    <img src="../_kafka/kafka-broker.png" title="Fonte: https://blog.geekhunter.com.br/apache-kafka/"/>
-    <figcaption>Visão geral dos produtores, broker e consumidores.</figcaption>
-</figure>
+![Visão geral dos produtores, broker e consumidores - Fonte: https://blog.geekhunter.com.br/apache-kafka/](../assets/kafka-broker.png)
 
 As configurações do Apache Kafka são gerenciadas pelo **Apache Zookeeper**, que armazena os metadados do _cluster_, como localização das partições, lista de nomes, lista de tópicos e nós disponíveis. Assim, o Zookeeper mantém a sincronização entre os diversos elementos do _cluster_.
 
@@ -90,11 +84,10 @@ Isso é importante porque o Kafka é um sistema distribuído, ou seja, as grava�
 
 O Kafka funciona como uma fila de mensagens, possuindo produtores e consumidores, mas a implementação tem particularidades, a começar pela própria mensagem em si, no Kafka ela é simplesmente um array de bytes, sem um formato específico, que pode ou não possuir uma chave. Quando a chave é fornecida, é gerado um cálculo de hash que garante que mensagens com a mesma chave sejam escritas sempre na mesma partição, essa escrita é realizada em lotes compactados de mensagens, diminuindo a carga de rede nos casos em que o volume de mensagens seja grande. O tamanho do lote é configurável e deve ser pensado com cautela para no caso não ser grande demais e aumentar o tempo de registro da mensagem.
 
-!!! note "Notas"
-
-    Para determinar em que partição uma mensagem será armazenada através do modelo **round-robin**, o Kafka calcula uma chave exclusiva e entrega a mensagem para o líder daquela partição. Ou seja, as mensagens são balanceadas entre as partições de um tópico. Os dados não são replicados entre as partições.
-
-    O Kafka garante a ordem de mensagens em uma partição, mas não garante a ordem em que as mensagens foram recebidas considerando todas partições.
+> **Notes**\
+> Para determinar em que partição uma mensagem será armazenada através do modelo **round-robin**, o Kafka calcula uma chave exclusiva e entrega a mensagem para o líder daquela partição. Ou seja, as mensagens são balanceadas entre as partições de um tópico. Os dados não são replicados entre as partições.
+>
+> O Kafka garante a ordem de mensagens em uma partição, mas não garante a ordem em que as mensagens foram recebidas considerando todas partições.
 
 As mensagens são armazenadas pelo tempo que for configurado, e e as mesmas se tornam imutáveis e possuem garantias de entrega através de implementações de replicação e persistência, isso me fez entender que o Kafka também é um storage de dados.
 
@@ -118,16 +111,14 @@ Cada tópico é dividido em partições, que determinam o nível de paralelismo 
 
 Cada partição é servida por apenas um _broker_, o líder, mas as mensagens são replicadas entre os outros _brokers_ para tolerância a falhas. Caso o líder se torne inacessível, um de seus seguidores irá assumir a função de líder e passará a servir os clientes.
 
-!!! note "Notas"
+> **Notes**\
+> As mensagens são armazenadas sequencialmente em um partição começando em 0. Se um consumidor cair e subir depois de algum tempo, ele pode continuar a leitura das mensagens de onde parou, pois o último _offset_ lido por aquele cliente é armazenado em um tópico escondido chamado **consumer offsets**.
+>
+> Os _offsets_ de partições diferentes são independentes entre si. Por exemplo, o _offset_ 0 da partição 0 não contém o mesmo dado do _offset_ 0 da partição 1.
 
-    As mensagens são armazenadas sequencialmente em um partição começando em 0. Se um consumidor cair e subir depois de algum tempo, ele pode continuar a leitura das mensagens de onde parou, pois o último _offset_ lido por aquele cliente é armazenado em um tópico escondido chamado **consumer offsets**.
+Veja na figura abaixo um exemplo de Tópico com múltiplas partições:
 
-    Os _offsets_ de partições diferentes são independentes entre si. Por exemplo, o _offset_ 0 da partição 0 não contém o mesmo dado do _offset_ 0 da partição 1.
-
-<figure>
-    <img src="../_kafka/kafka-topico.png" title="Fonte: https://ivanqueiroz.dev/2020/06/2020-06-14-conceitos-kafka.html"/>
-    <figcaption>Tópico com múltiplas partições.</figcaption>
-</figure>
+![Tópico com múltiplas partições - Fonte: https://ivanqueiroz.dev/2020/06/2020-06-14-conceitos-kafka.html](../assets/kafka-topico.png)
 
 ### _Brokers_ e _Clusters_
 
@@ -137,19 +128,16 @@ O _broker_ Kafka foi construído para operar como parte de um _cluster_ e se tor
 
 A estrutura do Kafka permite que uma partição seja associada múltiplos _brokers_, isso resulta em uma replicação da partição que provê uma redundância das mensagens armazenadas na mesma, caso um servidor caia outro pode assumir no lugar. Na replicação apenas um _broker_ pode receber e veicular dados o chamado _leader_, os outros serão utilizados para sincronia dentro da replicação. A replicação de partições em _brokers_ diferentes é realizada por um recurso chamado **Replication Factor**.
 
-<figure>
-    <img src="../_kafka/kafka-cluster-fluxo.png" title="Fonte: https://ivanqueiroz.dev/2020/06/2020-06-14-conceitos-kafka.html"/>
-    <figcaption>Cluster Kafka.</figcaption>
-</figure>
+Veja na figura um exemplo de cluster Kafka:
 
-<figure>
-    <img src="../_kafka/kafka-cluster-topicos.png" title="Fonte: https://medium.com/@jhansireddy007/basic-concepts-of-kafka-e49e7674585e"/>
-    <figcaption>Cluster Kafka com vários tópicos.</figcaption>
-</figure>
+![Cluster Kafka - Fonte: https://ivanqueiroz.dev/2020/06/2020-06-14-conceitos-kafka.html](../assets/kafka-cluster-fluxo.png)
 
-!!! note "Notas"
+Veja na figura um exemplo de cluster Kafka com vários tópicos:
 
-    A duração de uma mensagem pode ser configurado pelo tempo (1 semana por exemplo) ou pelo tamanho limite (ex.: 2 gb). Quando o limite é atingido, as mensagens são marcadas como expiradas e excluídas.
+![Cluster Kafka com vários tópicos - Fonte: https://medium.com/@jhansireddy007/basic-concepts-of-kafka-e49e7674585e](../assets/kafka-cluster-topicos.png)
+
+> **Notes**\
+> A duração de uma mensagem pode ser configurado pelo tempo (1 semana por exemplo) ou pelo tamanho limite (ex.: 2 gb). Quando o limite é atingido, as mensagens são marcadas como expiradas e excluídas.
 
 Os tópicos podem ter configurações de armazenamento das mensagens individualmente, isso permite escolher mais tempo para tópicos julgados mais importantes para a solução.
 
@@ -165,19 +153,16 @@ Consumidores leem as mensagens produzidas e controlam o consumo através dos _of
 
 No Kafka os consumidores trabalham como parte de um **grupo de consumidores**, o qual pode ter um ou mais participantes que trabalhem juntos no consumo de um tópico. O grupo garante que cada partição seja consumida por apenas um membro, isso permite escalar horizontalmente os consumidores no caso de uma grande quantidade de mensagens. Se um consumidor tiver algum problema, as partições são redistribuídas entre os outros membros ativos.
 
-!!! note "Notas"
+> **Notes**\
+> Consumidores dentro de um grupo de consumidores dividem o acesso às partições do tópico. Uma mensagem será replicada em cada partição do tópico e cada partição entregará a mensagem para um consumidor por vez. Uma mesma partição pode ser atribuída a um consumidor diferente em um consumer group diferente, mas desde que os _offsets_ lidos sejam diferentes. O Coordenador do grupo (um dos _brokers_) é responsável por conectar uma partição a um consumidor específico. A quantidade de consumidores em um grupo deve ser menor ou igual a quantidade de partições em um tópico, caso contrário, alguns consumidores ficarão ociosos.
 
-    Consumidores dentro de um grupo de consumidores dividem o acesso às partições do tópico. Uma mensagem será replicada em cada partição do tópico e cada partição entregará a mensagem para um consumidor por vez. Uma mesma partição pode ser atribuída a um consumidor diferente em um consumer group diferente, mas desde que os _offsets_ lidos sejam diferentes. O Coordenador do grupo (um dos _brokers_) é responsável por conectar uma partição a um consumidor específico. A quantidade de consumidores em um grupo deve ser menor ou igual a quantidade de partições em um tópico, caso contrário, alguns consumidores ficarão ociosos.
+Abaixo uma figura com o exemplo de grupo de consumidores:
 
-<figure>
-    <img src="../_kafka/kafka-consumer-group.png" title="Fonte: https://atitudereflexiva.wordpress.com/2020/03/05/apache-kafka-introducao"/>
-    <figcaption>Grupo de consumidores.</figcaption>
-</figure>
+![Grupo de consumidores - Fonte: https://atitudereflexiva.wordpress.com/2020/03/05/apache-kafka-introducao](../assets/kafka-consumer-group.png)
 
-<figure>
-    <img src="../_kafka/kafka-consumer-groups.webp" title="Fonte: https://www.infoq.com/br/articles/apache-kafka-licoes"/>
-    <figcaption>Múltiplos Grupos de consumidores.</figcaption>
-</figure>
+Abaixo uma figura com o exemplo de múltiplos grupo de consumidores:
+
+![Múltiplos Grupos de consumidores - Fonte: https://www.infoq.com/br/articles/apache-kafka-licoes](../assets/kafka-consumer-groups.webp)
 
 A configuração padrão do Apache Kafka tem ótima performance, mesmo com hardware limitado. Ainda assim é necessário otimizar o _cluster_ quando temos grandes cargas de dados. Para escalar usamos várias estratégias, geralmente testando as combinações de configuração, por exemplo, alterando o número de produtores, consumidores e tópicos.
 
@@ -189,10 +174,7 @@ Quando um broker líder ficar indisponível, o Zookeeper enviará uma notificaç
 
 O Zookeeper sempre está atualizado com o estado do cluster Kafka, se um líder falhar, o Zookeeper coordenará as notificações para o controller, para a transição do novo líder.
 
-<figure>
-    <img src="../_kafka/zookeeper.webp" title="Fonte: https://www.infoq.com/br/articles/apache-kafka-licoes"/>
-    <figcaption>Zookeeper.</figcaption>
-</figure>
+![Zookeeper - Fonte: https://www.infoq.com/br/articles/apache-kafka-licoes](../assets/kafka-zookeeper.webp)
 
 ## Ferramentas complementares
 
