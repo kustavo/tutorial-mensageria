@@ -30,7 +30,7 @@ O Apache Kafka tem 3 funcionalidades principais:
 
 Basicamente, o Kafka é um intermediário que coleta os dados da fonte e entrega para uma aplicação que consumirá esses dados, como visto na imagem:
 
-![Arquitetura Macro - Fonte: https://atitudereflexiva.wordpress.com/2020/03/05/apache-kafka-introducao](../assets/kafka-visao-geral.png)
+![Arquitetura Macro - Fonte: https://atitudereflexiva.wordpress.com/2020/03/05/apache-kafka-introducao](assets/kafka-visao-geral.png)
 
 > **Notes** \
 > Um uso mais recente do Kafka é o processo de ETL (Extract, Transform and Load), que copia os registros de um banco de dados para outro, geralmente de uma base transacional (OLTP) para uma base analítica (OLAP).
@@ -68,13 +68,13 @@ O _producer_ é qualquer aplicação que publica mensagens no _cluster_. O _cons
 
 O Kafka funciona como um _cluster_ de _brokers_ e isso permite configurações interessantes de disponibilidade. Abaixo a figura da visão geral de um cluster:
 
-![Visão geral de um cluster - Fonte https://medium.com/@jhansireddy007/basic-concepts-of-kafka-e49e7674585e](../assets/kafka-cluster.png)
+![Visão geral de um cluster - Fonte https://medium.com/@jhansireddy007/basic-concepts-of-kafka-e49e7674585e](assets/kafka-cluster.png)
 
 Um _cluster_ Kafka é composto por vários _brokers_. Um _broker_ é um servidor Kafka que recebe mensagens dos producers e as grava no disco. Cada _broker_ gerencia uma lista de tópicos e cada tópico é dividido em diversas partições.
 
 Depois de receber as mensagens, o _broker_ as envia para os consumidores que estão registrados para cada tópico. Veja na imagem:
 
-![Visão geral dos produtores, broker e consumidores - Fonte: https://blog.geekhunter.com.br/apache-kafka/](../assets/kafka-broker.png)
+![Visão geral dos produtores, broker e consumidores - Fonte: https://blog.geekhunter.com.br/apache-kafka/](assets/kafka-broker.png)
 
 As configurações do Apache Kafka são gerenciadas pelo **Apache Zookeeper**, que armazena os metadados do _cluster_, como localização das partições, lista de nomes, lista de tópicos e nós disponíveis. Assim, o Zookeeper mantém a sincronização entre os diversos elementos do _cluster_.
 
@@ -118,7 +118,7 @@ Cada partição é servida por apenas um _broker_, o líder, mas as mensagens s�
 
 Veja na figura abaixo um exemplo de Tópico com múltiplas partições:
 
-![Tópico com múltiplas partições - Fonte: https://ivanqueiroz.dev/2020/06/2020-06-14-conceitos-kafka.html](../assets/kafka-topico.png)
+![Tópico com múltiplas partições - Fonte: https://ivanqueiroz.dev/2020/06/2020-06-14-conceitos-kafka.html](assets/kafka-topico.png)
 
 ### _Brokers_ e _Clusters_
 
@@ -130,11 +130,11 @@ A estrutura do Kafka permite que uma partição seja associada múltiplos _broke
 
 Veja na figura um exemplo de cluster Kafka:
 
-![Cluster Kafka - Fonte: https://ivanqueiroz.dev/2020/06/2020-06-14-conceitos-kafka.html](../assets/kafka-cluster-fluxo.png)
+![Cluster Kafka - Fonte: https://ivanqueiroz.dev/2020/06/2020-06-14-conceitos-kafka.html](assets/kafka-cluster-fluxo.png)
 
 Veja na figura um exemplo de cluster Kafka com vários tópicos:
 
-![Cluster Kafka com vários tópicos - Fonte: https://medium.com/@jhansireddy007/basic-concepts-of-kafka-e49e7674585e](../assets/kafka-cluster-topicos.png)
+![Cluster Kafka com vários tópicos - Fonte: https://medium.com/@jhansireddy007/basic-concepts-of-kafka-e49e7674585e](assets/kafka-cluster-topicos.png)
 
 > **Notes**\
 > A duração de uma mensagem pode ser configurado pelo tempo (1 semana por exemplo) ou pelo tamanho limite (ex.: 2 gb). Quando o limite é atingido, as mensagens são marcadas como expiradas e excluídas.
@@ -158,11 +158,11 @@ No Kafka os consumidores trabalham como parte de um **grupo de consumidores**, o
 
 Abaixo uma figura com o exemplo de grupo de consumidores:
 
-![Grupo de consumidores - Fonte: https://atitudereflexiva.wordpress.com/2020/03/05/apache-kafka-introducao](../assets/kafka-consumer-group.png)
+![Grupo de consumidores - Fonte: https://atitudereflexiva.wordpress.com/2020/03/05/apache-kafka-introducao](assets/kafka-consumer-group.png)
 
 Abaixo uma figura com o exemplo de múltiplos grupo de consumidores:
 
-![Múltiplos Grupos de consumidores - Fonte: https://www.infoq.com/br/articles/apache-kafka-licoes](../assets/kafka-consumer-groups.webp)
+![Múltiplos Grupos de consumidores - Fonte: https://www.infoq.com/br/articles/apache-kafka-licoes](assets/kafka-consumer-groups.webp)
 
 A configuração padrão do Apache Kafka tem ótima performance, mesmo com hardware limitado. Ainda assim é necessário otimizar o _cluster_ quando temos grandes cargas de dados. Para escalar usamos várias estratégias, geralmente testando as combinações de configuração, por exemplo, alterando o número de produtores, consumidores e tópicos.
 
@@ -174,7 +174,7 @@ Quando um broker líder ficar indisponível, o Zookeeper enviará uma notificaç
 
 O Zookeeper sempre está atualizado com o estado do cluster Kafka, se um líder falhar, o Zookeeper coordenará as notificações para o controller, para a transição do novo líder.
 
-![Zookeeper - Fonte: https://www.infoq.com/br/articles/apache-kafka-licoes](../assets/kafka-zookeeper.webp)
+![Zookeeper - Fonte: https://www.infoq.com/br/articles/apache-kafka-licoes](assets/kafka-zookeeper.webp)
 
 ## Ferramentas complementares
 
